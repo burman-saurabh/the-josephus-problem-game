@@ -1,0 +1,214 @@
+<!--
+*Program Name.......................................: The Josephus Problem Game
+*Date...............................................: 14/12/2018
+*Author.............................................: Saurabh Burman
+*Company............................................: NA
+-->
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="./game.css">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <div id="rules">
+        <p>
+            The problem is named after Flavius Josephus, a Jewish historian living in the 1st century. According to Josephus' account of the siege of Yodfat, he and his 40 soldiers were trapped in a cave by Roman soldiers. They chose suicide over capture, and settled on a serial method of committing suicide by drawing lots. Josephus states that by luck or possibly by the hand of God, he and another man remained until the end and surrendered to the Romans rather than killing themselves.
+        </p>
+        <button onclick="hideRules()">Let's Play</button>
+
+    </div>
+
+    <div id="circle">
+        <div id="gameTitle">The Josephus Problem</div>
+        <div id="result"></div>
+
+    </div>
+
+    <input type="text" id="inputTotalNo" placeholder="No. of people in the shootout">
+    <input type="text" id="guess" placeholder="Guess the survivor">
+    <button onclick="toCheck(arrayToCheck)">Click Here</button>
+
+
+    <script>
+
+        function hideRules(){
+            document.getElementById("rules").style.display = 'none';
+        }
+        // let id = 1;
+        // let elem = document.createElement('div');
+        // elem.setAttribute('id', id);
+        // elem.setAttribute('class', 'circleInner');
+        // elem.innerHTML = id;
+
+        // document.getElementById('circle').appendChild(elem);
+
+        // console.log(document.getElementById("circle").offsetTop);
+        // console.log(document.getElementById("circle").offsetLeft);
+
+        // x = 200 * Math.cos(60) - 10;
+        // y = 200 * Math.sin(60) - 10;
+        // console.log(x , y);
+        // document.getElementsByClassName("circleInner")[0].style.transform = `translate(${x}px, ${y}px)`;
+
+        function constructCircle(peopleArray) {
+            // debugger;
+            let listDiv = document.getElementsByClassName('circleInner');
+            console.log(listDiv);
+            let length = listDiv.length; //noted length here since when the divs are removed from the document
+            //and it auto modify the listDiv array and thus the length of the listDiv
+            //So, we find the elem one by one in the for loop with its id,
+            //instead of going through the listDiv which chages dynamically.
+            for (i = 0; i < length; i++) {
+                let elem = document.getElementById(i + 1);
+                elem.parentNode.removeChild(elem);
+            }
+
+            let angleBetweenTwo = 360 / (peopleArray.length);
+
+            for (i = 0; i < peopleArray.length; i++) {
+
+                let elem = document.createElement('div');
+                elem.setAttribute('id', i + 1);
+                elem.setAttribute('class', 'circleInner');
+                elem.innerHTML = i + 1;
+                document.getElementById('circle').appendChild(elem);
+
+                let x = 200 * Math.cos(angleBetweenTwo * i * Math.PI / 180) - 10; // 10px for the radius translation adjustment of the smaller circle
+                let y = 200 * Math.sin(angleBetweenTwo * i * Math.PI / 180) - 10;
+
+                console.log(x, y);
+
+                elem.style.transform = `translate(${x}px, ${y}px)`;
+            }
+        }
+
+        async function updateColorOfRemoved(removedArray) {
+            // debugger;
+            //note the the calling function is also changed to await
+            //since while the loop below is doing its task for the first time for the removedArray
+            //the next statement after the calling statement executes and which inturn make another call
+            //from the calling statement and thus making another loop run at the same time when the
+            // first loop is running. So, to make all loops to run one after another the calling statement
+            //should be awaiting till the current loop finish executing.
+          
+                for (i = 0; i < removedArray.length; i++) {
+                    let elem = document.getElementById(removedArray[i]);
+                    // elem.style.backgroundColor = 'red';
+                    await setColor(elem);
+                    console.log('looping');
+                }
+      
+            // console.log('done');
+
+        }
+
+        function setColor(elem) {
+            return new Promise(function(resolve, reject){
+                setTimeout(() => {
+                    elem.style.background = 'url(./media/soldierDead.png) center';
+                    resolve('ok');
+                }, 2000);
+            });
+        }
+
+
+        document.getElementById('inputTotalNo').addEventListener('blur', createArrayOfPeople); //adding event listener to the input
+
+
+        var arrayToCheck = new Array(); //to check 
+
+        function createArrayOfPeople() {
+            let peopleArray = new Array();
+
+            for (iLoopCount = 1; iLoopCount <= document.getElementById('inputTotalNo').value; iLoopCount++) {
+                peopleArray.push(iLoopCount);
+            }
+            constructCircle(peopleArray); //constructing circle with the people
+            arrayToCheck = peopleArray;
+        }
+
+
+        // toCheck(peopleArray); //checking length for the first time
+        function toCheck(arrayToCheck) { // to check the length and breakdown the array
+            // debugger;
+            if (document.getElementById("guess").value.length == 0) {
+                // document.getElementById("invalidGuess").innerHTML = "Please provide your Guess!";
+                document.getElementById("guess").setAttribute('placeholder', 'Please enter you guess!');
+                document.getElementById("guess").style.border = 'solid red 1px';
+            } else {
+                // document.getElementById("guess").setAttribute('placeholder', 'Please enter you guess!');
+                document.getElementById("guess").style.border = 'solid black 1px';
+                if (arrayToCheck.length == 1) {
+                    console.log("The winning person is " + arrayToCheck[0]);
+
+                    if (document.getElementById("guess").value == arrayToCheck[0]) { //checking if the guess is correct or not
+                        // alert('You guessed right!');
+                        document.getElementById('result').style.display = 'block';
+                        document.getElementById('result').innerHTML = `You guessed right!<br>No. ${arrayToCheck[0]} is the survivor`;
+                        document.getElementById(arrayToCheck[0]).style.boxShadow = '0px 0px 20px 10px green';
+                        
+                        
+                    } else {
+                        // alert('You guessed wrong!');
+                        document.getElementById('result').style.borderColor = 'red';
+                        document.getElementById('result').style.display = 'block';
+                        document.getElementById('result').innerHTML = `Sorry, You guessed wrong!<br>No. ${arrayToCheck[0]} is the survivor`;
+                        document.getElementById(document.getElementById("guess").value).style.boxShadow = '0px 0px 20px 10px red';
+                        document.getElementById(arrayToCheck[0]).style.boxShadow = '0px 0px 20px 10px green';
+                    }
+
+                } else {
+                    generateNextSmallerArray(arrayToCheck);
+                }
+            }
+        }
+
+        async function generateNextSmallerArray(currentArray) { // generating the next smaller array here
+
+            let newArray = new Array();
+
+
+            if (currentArray.length % 2 == 0) {
+                let removedArray = new Array();
+                for (iLoopCount = 0; iLoopCount < currentArray.length; iLoopCount = iLoopCount + 2) {
+                    newArray.push(currentArray[iLoopCount]);
+                }
+                for (iLoopCount = 1; iLoopCount < currentArray.length; iLoopCount = iLoopCount + 2) {
+                    removedArray.push(currentArray[iLoopCount]);
+                }
+
+               await updateColorOfRemoved(removedArray); //updating the color of the removed people
+            }
+            //in above case of even length both the 1st no. is saved. so loop starting from 0 index.
+            else if (currentArray.length % 2 != 0) {
+                let removedArray = new Array();
+                for (iLoopCount = 2; iLoopCount < currentArray.length; iLoopCount = iLoopCount + 2) {
+                    newArray.push(currentArray[iLoopCount]);
+                }
+                for (iLoopCount = 1; iLoopCount < currentArray.length; iLoopCount = iLoopCount + 2) {
+                    removedArray.push(currentArray[iLoopCount]);
+                }
+                removedArray.push(currentArray[0]); //pushing the first element at the last of the removed array
+
+               await updateColorOfRemoved(removedArray); //updating the color of the removed people
+            }
+            //in above case of odd length both the 1st 2 nos. will be gone in first round
+            //keeping in mind that the last person performed his task
+
+            toCheck(newArray); // again checking length after the array breakdown
+
+        }
+    </script>
+
+</body>
+
+</html>

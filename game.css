@@ -1,0 +1,89 @@
+body{
+    background-color: burlywood;
+    margin: 0;
+}
+
+#circle{
+    border: 5px solid brown;
+    width: 400px;
+    height: 400px;
+    position: absolute;
+    top: 60%;
+    left: 50%;
+    -webkit-transform: translateX(-50%) translateY(-50%);
+    transform: translateX(-50%) translateY(-50%);
+    border-radius: 200px;
+}
+.circleInner{
+    border: 2px solid black;
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    border-radius: 10px;
+    color: white;
+    font-weight: 600;
+    text-align: center;
+    padding-top: 10px;
+    background: url(./media/soldierLive.png) center;
+    transition: background 0.7s;
+}
+
+#result{
+    border: 5px solid green;
+    width: 200px;
+    height: auto;
+    position: absolute;
+    top: 60%;
+    left: 50%;
+    -webkit-transform: translateX(-50%) translateY(-50%);
+    transform: translateX(-50%) translateY(-50%);
+    border-radius: 200px;
+    text-align: center;
+    line-height: 30px;
+    padding: 10px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    display: none;
+}
+
+#rules{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    text-align: center;
+    color: white;
+    background-color: black;
+    font-size: 2rem;
+    z-index: 2;
+    margin: 0;
+    padding: 0;
+}
+
+#rules p{
+    padding: 10% auto 0 auto;
+}
+
+#gameTitle{
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    -webkit-transform: translateX(-50%) translateY(-50%);
+    transform: translateX(-50%) translateY(-50%);
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: darkblue
+}
+
+button, input{
+    padding: 8px;
+    display: block;
+    margin: auto;
+    width: 200px;
+    border-radius: 6px;
+    margin: 4px auto;
+    border: solid black 1px;
+    font-weight: 600;
+}
